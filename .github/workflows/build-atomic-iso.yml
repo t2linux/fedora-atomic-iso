@@ -1,0 +1,45 @@
+name: Build Atomic ISOs
+on:
+  push:
+
+jobs:
+  build-iso:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+
+      - name: "Increase Disk Space"
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          sudo docker image prune --all --force
+          sudo rm -rf /home/linuxbrew
+          sudo apt-get remove -y --purge fonts-noto-color-emoji subversion \
+              sshpass g++ gcc gnupg2 imagemagick jq libmagic-dev \
+              libmagickcore-dev	libmagickwand-dev	libssl-dev \
+              mercurial openssh-client p7zip-full	ftp bison
+          sudo apt-get autoremove -y
+
+      - name: Pull Container Images
+        id: cache-container-images
+        uses: jamesmortensen/cache-container-images-action@v1
+        with:
+          images: |
+            ghcr.io/t2linux/fedora-silverblue:unstable
+            quay.io/centos-bootc/bootc-image-builder:latest
+
+      - name: "Build ISO"
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: |
+          ./build-iso.sh
+
+      - name: "Upload Artifact"
+        if: '!cancelled()'
+        uses: actions/upload-artifact@v3
+        with:
+          name: fedora-silverblue-iso
+          path: |
+            ./fedora-silverblue.iso
