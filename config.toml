@@ -1,11 +1,4 @@
-[customizations.kernel]
-append = "intel_iommu=on iommu=pt mem_sleep=s2idle pcie_ports=native"
-
 [customizations.installer.modules]
-enable = [
-    "org.fedoraproject.Anaconda.Modules.Localization",
-    "org.fedoraproject.Anaconda.Modules.Timezone",
-]
 disable = [
     "org.fedoraproject.Anaconda.Modules.Users",
     "org.fedoraproject.Anaconda.Modules.Network",
@@ -14,8 +7,6 @@ disable = [
 [customizations.installer.kickstart]
 contents = """
 graphical
-
-bootloader --append="intel_iommu=on iommu=pt mem_sleep=s2idle pcie_ports=native"
 
 %post
 
