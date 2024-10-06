@@ -6,7 +6,7 @@ IMAGE="ghcr.io/t2linux/fedora-silverblue:unstable"
 mkdir output
 
 cp config.toml .tmp-config.toml
-sed -i "s/REPLACE_WITH_IMAGE_NAME/$IMAGE/g" .tmp-config.toml
+sed -i "s@REPLACE_WITH_IMAGE_NAME@$IMAGE@g" .tmp-config.toml
 
 podman pull "$IMAGE"
 
