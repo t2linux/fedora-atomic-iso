@@ -1,26 +1,24 @@
 #!/usr/bin/env bash
 set -e
 
-IMAGE="ghcr.io/t2linux/fedora-silverblue:unstable"
+IMAGE="ghcr.io/t2linux/fedora-silverblue:43"
+INSTALLER_IMAGE="ghcr.io/t2linux/fedora-silverblue-installer:43"
 
-mkdir output
+mkdir -p build
 
-cp config.toml .tmp-config.toml
-sed -i "s@REPLACE_WITH_IMAGE_NAME@$IMAGE@g" .tmp-config.toml
+sudo podman pull "$IMAGE" "$INSTALLER_IMAGE"
 
-podman pull "$IMAGE"
-
-podman run --rm -it --privileged \
+sudo podman run --rm -it --privileged \
   --platform linux/amd64 \
+  --privileged \
   --security-opt label=type:unconfined_t \
   -v /var/lib/containers/storage:/var/lib/containers/storage \
-  -v "$PWD/output":/output \
-  -v "$PWD/.tmp-config.toml":/config.toml \
+  -v "$PWD/build":/output \
+  -v "$PWD/config.toml":/config.toml \
   quay.io/centos-bootc/bootc-image-builder:latest \
-  --type anaconda-iso \
+  --in-vm \
+  --use-librepo=True \
+  --type bootc-installer \
   --rootfs btrfs \
-  --local \
-  "$IMAGE"
-
-mv output/bootiso/install.iso ./fedora-silverblue.iso
-rm -rf output
+  --bootc-installer-payload-ref "$IMAGE" \
+  "$INSTALLER_IMAGE"
