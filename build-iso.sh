@@ -17,3 +17,5 @@ sudo podman run --rm -it --privileged \
     --bootc-default-fs btrfs \
     --bootc-ref "$INSTALLER_IMAGE" \
     --bootc-installer-payload-ref "$IMAGE"
+
+mv build/*-installer-x86_64/*.iso build/fedora-silverblue.iso
