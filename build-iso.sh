@@ -14,11 +14,7 @@ sudo podman run --rm -it --privileged \
   --security-opt label=type:unconfined_t \
   -v /var/lib/containers/storage:/var/lib/containers/storage \
   -v "$PWD/build":/output \
-  -v "$PWD/config.toml":/config.toml \
-  quay.io/centos-bootc/bootc-image-builder:latest \
-  --in-vm \
-  --use-librepo=True \
-  --type bootc-installer \
-  --rootfs btrfs \
-  --bootc-installer-payload-ref "$IMAGE" \
-  "$INSTALLER_IMAGE"
+  ghcr.io/osbuild/image-builder-cli build \
+  --bootc-default-fs btrfs \
+  --bootc-ref "$INSTALLER_IMAGE" \
+  --bootc-installer-payload-ref "$IMAGE"
