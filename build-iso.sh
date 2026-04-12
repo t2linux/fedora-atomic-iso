@@ -6,8 +6,6 @@ INSTALLER_IMAGE="ghcr.io/t2linux/fedora-silverblue-installer:43"
 
 mkdir -p build
 
-sudo podman pull "$IMAGE" "$INSTALLER_IMAGE"
-
 sudo podman run --rm -it --privileged \
   --platform linux/amd64 \
   --privileged \
@@ -15,6 +13,7 @@ sudo podman run --rm -it --privileged \
   -v /var/lib/containers/storage:/var/lib/containers/storage \
   -v "$PWD/build":/output \
   ghcr.io/osbuild/image-builder-cli build \
-  --bootc-default-fs btrfs \
-  --bootc-ref "$INSTALLER_IMAGE" \
-  --bootc-installer-payload-ref "$IMAGE"
+    bootc-installer \
+    --bootc-default-fs btrfs \
+    --bootc-ref "$INSTALLER_IMAGE" \
+    --bootc-installer-payload-ref "$IMAGE"
