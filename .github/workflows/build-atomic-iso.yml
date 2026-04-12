@@ -28,7 +28,8 @@ jobs:
         uses: jamesmortensen/cache-container-images-action@v1.0.1
         with:
           images: |
-            ghcr.io/t2linux/fedora-silverblue:unstable
+            ghcr.io/t2linux/fedora-silverblue:43
+            ghcr.io/t2linux/fedora-silverblue-installer:43
             ghcr.io/osbuild/image-builder-cli
 
       - name: "Build ISO"
